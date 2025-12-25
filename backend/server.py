@@ -198,6 +198,9 @@ async def login(credentials: UserLogin):
     if not user or not verify_password(credentials.password, user['password_hash']):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
+    if user['role'] == 'admin' and not user.get('approved', True):
+        raise HTTPException(status_code=403, detail="Your admin account is pending approval")
+    
     token = create_token(user['id'], user['email'], user['role'])
     user.pop('password_hash', None)
     return {"token": token, "user": user}
