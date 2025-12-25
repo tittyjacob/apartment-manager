@@ -263,6 +263,39 @@ export default function ResidentDashboard() {
           </div>
         </div>
       </main>
+
+      <Dialog open={paymentDialogOpen} onOpenChange={setPaymentDialogOpen}>
+        <DialogContent data-testid="payment-method-dialog">
+          <DialogHeader>
+            <DialogTitle data-testid="dialog-title">Choose Payment Method</DialogTitle>
+            <CardDescription>Select your preferred payment gateway</CardDescription>
+          </DialogHeader>
+          <div className="space-y-3 pt-4">
+            <Button 
+              className="w-full justify-start h-auto py-4" 
+              variant="outline"
+              onClick={handleStripePayment}
+              data-testid="stripe-payment-btn"
+            >
+              <div className="flex flex-col items-start gap-1">
+                <span className="font-semibold">Pay with Stripe</span>
+                <span className="text-xs text-muted-foreground">Credit/Debit Card, International payments</span>
+              </div>
+            </Button>
+            <Button 
+              className="w-full justify-start h-auto py-4" 
+              variant="outline"
+              onClick={handleRazorpayPayment}
+              data-testid="razorpay-payment-btn"
+            >
+              <div className="flex flex-col items-start gap-1">
+                <span className="font-semibold">Pay with Razorpay</span>
+                <span className="text-xs text-muted-foreground">UPI, Cards, Net Banking, Wallets (India)</span>
+              </div>
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
