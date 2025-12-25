@@ -476,6 +476,142 @@ async def stripe_webhook(request: Request):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+# Razorpay Payment Routes
+class RazorpayOrderRequest(BaseModel):
+    flat_id: str
+    month: int
+    year: int
+
+class RazorpayVerifyRequest(BaseModel):
+    razorpay_order_id: str
+    razorpay_payment_id: str
+    razorpay_signature: str
+    flat_id: str
+    month: int
+    year: int
+
+@api_router.post("/payments/razorpay/create-order")
+async def create_razorpay_order(order_req: RazorpayOrderRequest, current_user: dict = Depends(get_current_user)):
+    flat = await db.flats.find_one({"id": order_req.flat_id}, {"_id": 0})
+    if not flat:
+        raise HTTPException(status_code=404, detail="Flat not found")
+    
+    charge = await db.monthly_charges.find_one(
+        {"month": order_req.month, "year": order_req.year}, {"_id": 0}
+    )
+    if not charge:
+        raise HTTPException(status_code=404, detail="Charges not set for this month")
+    
+    amount = flat.get('custom_charge') or charge['base_charge']
+    amount_paise = int(amount * 100)
+    
+    try:
+        razor_order = razorpay_client.order.create({
+            "amount": amount_paise,
+            "currency": "INR",
+            "payment_capture": 1,
+            "notes": {
+                "flat_id": order_req.flat_id,
+                "month": str(order_req.month),
+                "year": str(order_req.year),
+                "user_id": current_user['user_id']
+            }
+        })
+        
+        transaction = PaymentTransaction(
+            session_id=razor_order["id"],
+            flat_id=order_req.flat_id,
+            month=order_req.month,
+            year=order_req.year,
+            amount=amount,
+            currency="INR",
+            payment_status="pending",
+            metadata={
+                "flat_id": order_req.flat_id,
+                "month": str(order_req.month),
+                "year": str(order_req.year),
+                "user_id": current_user['user_id']
+            }
+        )
+        await db.payment_transactions.insert_one(transaction.model_dump())
+        
+        return {
+            "order_id": razor_order["id"],
+            "amount": amount_paise,
+            "currency": "INR",
+            "key_id": os.environ.get('RAZORPAY_KEY_ID')
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/payments/razorpay/verify")
+async def verify_razorpay_payment(verify_req: RazorpayVerifyRequest, current_user: dict = Depends(get_current_user)):
+    try:
+        razorpay_client.utility.verify_payment_signature({
+            'razorpay_order_id': verify_req.razorpay_order_id,
+            'razorpay_payment_id': verify_req.razorpay_payment_id,
+            'razorpay_signature': verify_req.razorpay_signature
+        })
+        
+        transaction = await db.payment_transactions.find_one(
+            {"session_id": verify_req.razorpay_order_id}, {"_id": 0}
+        )
+        
+        if not transaction:
+            raise HTTPException(status_code=404, detail="Transaction not found")
+        
+        if transaction['payment_status'] == "paid":
+            return {"status": "success", "message": "Payment already recorded"}
+        
+        await db.payment_transactions.update_one(
+            {"session_id": verify_req.razorpay_order_id},
+            {"$set": {"payment_status": "paid", "razorpay_payment_id": verify_req.razorpay_payment_id}}
+        )
+        
+        existing_payment = await db.payments.find_one(
+            {"flat_id": verify_req.flat_id, "month": verify_req.month, 
+             "year": verify_req.year, "status": "paid"},
+            {"_id": 0}
+        )
+        
+        if not existing_payment:
+            flat = await db.flats.find_one({"id": verify_req.flat_id}, {"_id": 0})
+            receipt_number = f"REC-{datetime.now(timezone.utc).strftime('%Y%m%d')}-{str(uuid.uuid4())[:8].upper()}"
+            
+            payment = Payment(
+                flat_id=verify_req.flat_id,
+                flat_number=flat['flat_number'],
+                month=verify_req.month,
+                year=verify_req.year,
+                amount=transaction['amount'],
+                payment_date=datetime.now(timezone.utc).isoformat(),
+                payment_method="razorpay",
+                receipt_number=receipt_number,
+                status="paid"
+            )
+            await db.payments.insert_one(payment.model_dump())
+        
+        return {"status": "success", "message": "Payment verified and recorded"}
+    except razorpay.errors.SignatureVerificationError:
+        raise HTTPException(status_code=400, detail="Invalid payment signature")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/webhook/razorpay")
+async def razorpay_webhook(request: Request):
+    body = await request.body()
+    signature = request.headers.get("X-Razorpay-Signature")
+    
+    try:
+        razorpay_client.utility.verify_webhook_signature(
+            body.decode(),
+            signature,
+            os.environ.get('RAZORPAY_WEBHOOK_SECRET', '')
+        )
+        return {"received": True}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
 app.include_router(api_router)
 
 app.add_middleware(
