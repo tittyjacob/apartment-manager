@@ -148,6 +148,10 @@ export default function AdminDashboard() {
                 <DollarSign className="h-4 w-4 mr-2" />
                 Set Monthly Charges
               </Button>
+              <Button className="w-full justify-start" onClick={() => navigate('/dues')} data-testid="manage-dues-btn">
+                <CalendarDays className="h-4 w-4 mr-2" />
+                Manage Dues
+              </Button>
               <Button className="w-full justify-start" onClick={() => navigate('/payments')} data-testid="record-payment-btn">
                 <CreditCard className="h-4 w-4 mr-2" />
                 Record Payment
