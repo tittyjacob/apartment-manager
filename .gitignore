@@ -38,4 +38,7 @@ dist/
 htmlcov/
 
 # MongoDB data
-data/
+data/-e 
+# Environment files
+*.env
+*.env.*
