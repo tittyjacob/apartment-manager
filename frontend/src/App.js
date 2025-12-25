@@ -8,6 +8,7 @@ import FlatsManagement from './pages/FlatsManagement';
 import MonthlyCharges from './pages/MonthlyCharges';
 import Payments from './pages/Payments';
 import DuesManagement from './pages/DuesManagement';
+import AdminApprovals from './pages/AdminApprovals';
 import PaymentSuccess from './pages/PaymentSuccess';
 import './App.css';
 
