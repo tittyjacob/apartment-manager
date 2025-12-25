@@ -7,14 +7,20 @@ ARG REACT_APP_BACKEND_URL=http://localhost:8001
 ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
 ENV NODE_ENV=production
 
-# Copy package files
+# Copy package files - handle both yarn.lock and package-lock.json
 COPY package.json ./
-COPY yarn.lock ./
 
-# Install yarn and dependencies
-RUN corepack enable && \
-    corepack prepare yarn@stable --activate && \
-    yarn install --frozen-lockfile
+# Check if yarn.lock exists and copy it
+COPY yarn.loc[k] ./ 2>/dev/null || true
+
+# Install dependencies - use yarn if yarn.lock exists, otherwise npm
+RUN if [ -f yarn.lock ]; then \
+      corepack enable && \
+      corepack prepare yarn@stable --activate && \
+      yarn install --frozen-lockfile; \
+    else \
+      npm install --force --legacy-peer-deps; \
+    fi
 
 # Copy rest of the code
 COPY . .
