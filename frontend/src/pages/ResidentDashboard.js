@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useRazorpay } from 'react-razorpay';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Building2, DollarSign, Receipt, LogOut, CreditCard, AlertCircle, CheckCircle } from 'lucide-react';
 import api from '@/utils/api';
 
