@@ -65,6 +65,14 @@ function App() {
             }
           />
           <Route
+            path="/dues"
+            element={
+              <ProtectedRoute role="admin">
+                <DuesManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/payment-success"
             element={
               <ProtectedRoute>
