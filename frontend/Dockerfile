@@ -9,8 +9,8 @@ ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
 # Copy package.json first
 COPY package.json ./
 
-# Install dependencies using npm (more reliable than yarn in Docker)
-RUN npm install --legacy-peer-deps
+# Clean install with force to resolve dependency conflicts
+RUN npm install --force --legacy-peer-deps
 
 # Copy rest of the code
 COPY . .
