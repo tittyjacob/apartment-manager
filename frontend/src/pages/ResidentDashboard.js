@@ -33,7 +33,12 @@ export default function ResidentDashboard() {
   };
 
   const handlePayment = async () => {
+    setPaymentDialogOpen(true);
+  };
+
+  const handleStripePayment = async () => {
     setPaying(true);
+    setPaymentDialogOpen(false);
     try {
       const currentDate = new Date();
       const checkoutData = {
@@ -46,7 +51,67 @@ export default function ResidentDashboard() {
       const { data } = await api.post('/payments/checkout', checkoutData);
       window.location.href = data.url;
     } catch (error) {
-      toast.error('Failed to initiate payment');
+      toast.error('Failed to initiate Stripe payment');
+      setPaying(false);
+    }
+  };
+
+  const handleRazorpayPayment = async () => {
+    setPaying(true);
+    setPaymentDialogOpen(false);
+    try {
+      const currentDate = new Date();
+      const orderData = {
+        flat_id: dashboardData.flat.id,
+        month: currentDate.getMonth() + 1,
+        year: currentDate.getFullYear()
+      };
+      
+      const { data } = await api.post('/payments/razorpay/create-order', orderData);
+      
+      const options = {
+        key: data.key_id,
+        amount: data.amount,
+        currency: data.currency,
+        order_id: data.order_id,
+        name: 'Apartment Maintenance',
+        description: `Payment for ${currentDate.toLocaleString('default', { month: 'long' })} ${currentDate.getFullYear()}`,
+        handler: async (response) => {
+          try {
+            await api.post('/payments/razorpay/verify', {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              flat_id: orderData.flat_id,
+              month: orderData.month,
+              year: orderData.year
+            });
+            toast.success('Payment successful!');
+            fetchDashboard();
+            setPaying(false);
+          } catch (error) {
+            toast.error('Payment verification failed');
+            setPaying(false);
+          }
+        },
+        prefill: {
+          name: dashboardData.flat.owner_name,
+          email: dashboardData.flat.owner_email,
+          contact: dashboardData.flat.owner_phone
+        },
+        theme: {
+          color: '#1A4D2E'
+        }
+      };
+
+      const razorpayInstance = new Razorpay(options);
+      razorpayInstance.on('payment.failed', () => {
+        toast.error('Payment failed. Please try again.');
+        setPaying(false);
+      });
+      razorpayInstance.open();
+    } catch (error) {
+      toast.error('Failed to initiate Razorpay payment');
       setPaying(false);
     }
   };
