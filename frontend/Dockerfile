@@ -6,17 +6,14 @@ WORKDIR /app
 ARG REACT_APP_BACKEND_URL=http://localhost:8001
 ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
 
-# Copy package manager lock files (if they exist)
-COPY package.json yarn.lock* package-lock.json* ./
+# Copy everything (package.json, yarn.lock, source code)
+COPY . .
 
-# Enable yarn via corepack
+# Enable yarn
 RUN corepack enable && corepack prepare yarn@stable --activate
 
-# Install dependencies (yarn will use yarn.lock if it exists)
-RUN yarn install --frozen-lockfile || yarn install || npm install --force
-
-# Copy source code
-COPY . .
+# Install dependencies
+RUN yarn install --frozen-lockfile || yarn install
 
 # Build
 RUN yarn build
