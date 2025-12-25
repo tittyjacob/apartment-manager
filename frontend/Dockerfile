@@ -5,18 +5,22 @@ WORKDIR /app
 # Set build argument
 ARG REACT_APP_BACKEND_URL=http://localhost:8001
 ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
+ENV NODE_ENV=production
 
-# Copy package.json first
+# Copy package files
 COPY package.json ./
+COPY yarn.lock ./
 
-# Clean install with force to resolve dependency conflicts
-RUN npm install --force --legacy-peer-deps
+# Install yarn and dependencies
+RUN corepack enable && \
+    corepack prepare yarn@stable --activate && \
+    yarn install --frozen-lockfile
 
 # Copy rest of the code
 COPY . .
 
 # Build the app
-RUN npm run build
+RUN yarn build
 
 # Production stage with Nginx
 FROM nginx:alpine
