@@ -10,9 +10,11 @@ import api from '@/utils/api';
 
 export default function ResidentDashboard() {
   const navigate = useNavigate();
+  const [Razorpay] = useRazorpay();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [paying, setPaying] = useState(false);
+  const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   useEffect(() => {
