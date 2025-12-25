@@ -26,7 +26,7 @@ RUN if [ -f yarn.lock ]; then \
 COPY . .
 
 # Build the app
-RUN yarn build
+RUN if [ -f yarn.lock ]; then yarn build; else npm run build; fi
 
 # Production stage with Nginx
 FROM nginx:alpine
