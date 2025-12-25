@@ -69,6 +69,14 @@ export default function ResidentDashboard() {
   const handleRazorpayPayment = async () => {
     setPaying(true);
     setPaymentDialogOpen(false);
+    
+    const res = await loadRazorpayScript();
+    if (!res) {
+      toast.error('Failed to load Razorpay. Please check your internet connection.');
+      setPaying(false);
+      return;
+    }
+    
     try {
       const currentDate = new Date();
       const orderData = {
@@ -114,7 +122,7 @@ export default function ResidentDashboard() {
         }
       };
 
-      const razorpayInstance = new Razorpay(options);
+      const razorpayInstance = new window.Razorpay(options);
       razorpayInstance.on('payment.failed', () => {
         toast.error('Payment failed. Please try again.');
         setPaying(false);
