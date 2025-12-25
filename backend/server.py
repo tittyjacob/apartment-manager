@@ -212,6 +212,48 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
+# Admin Approval Routes
+@api_router.get("/admin/pending")
+async def get_pending_admins(current_user: dict = Depends(get_current_user)):
+    user = await db.users.find_one({"id": current_user['user_id']}, {"_id": 0})
+    if not user or not user.get('is_super_admin', False):
+        raise HTTPException(status_code=403, detail="Super admin access required")
+    
+    pending_admins = await db.users.find(
+        {"role": "admin", "approved": False}, 
+        {"_id": 0, "password_hash": 0}
+    ).to_list(1000)
+    return pending_admins
+
+@api_router.post("/admin/approve/{user_id}")
+async def approve_admin(user_id: str, current_user: dict = Depends(get_current_user)):
+    user = await db.users.find_one({"id": current_user['user_id']}, {"_id": 0})
+    if not user or not user.get('is_super_admin', False):
+        raise HTTPException(status_code=403, detail="Super admin access required")
+    
+    result = await db.users.update_one(
+        {"id": user_id, "role": "admin"},
+        {"$set": {"approved": True}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Admin not found")
+    
+    return {"message": "Admin approved successfully"}
+
+@api_router.post("/admin/reject/{user_id}")
+async def reject_admin(user_id: str, current_user: dict = Depends(get_current_user)):
+    user = await db.users.find_one({"id": current_user['user_id']}, {"_id": 0})
+    if not user or not user.get('is_super_admin', False):
+        raise HTTPException(status_code=403, detail="Super admin access required")
+    
+    result = await db.users.delete_one({"id": user_id, "role": "admin", "approved": False})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Pending admin not found")
+    
+    return {"message": "Admin rejected and removed"}
+
 # Flats Routes
 @api_router.get("/flats", response_model=List[Flat])
 async def get_flats(current_user: dict = Depends(get_current_user)):
