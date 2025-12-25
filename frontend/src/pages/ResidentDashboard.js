@@ -20,7 +20,6 @@ const loadRazorpayScript = () => {
 
 export default function ResidentDashboard() {
   const navigate = useNavigate();
-  const [Razorpay] = useRazorpay();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [paying, setPaying] = useState(false);
@@ -29,6 +28,7 @@ export default function ResidentDashboard() {
 
   useEffect(() => {
     fetchDashboard();
+    loadRazorpayScript();
   }, []);
 
   const fetchDashboard = async () => {
