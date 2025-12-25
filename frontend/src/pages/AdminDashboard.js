@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Building2, DollarSign, AlertCircle, Receipt, LogOut, Users, CreditCard, CalendarDays } from 'lucide-react';
+import { Building2, DollarSign, AlertCircle, Receipt, LogOut, Users, CreditCard, CalendarDays, Shield } from 'lucide-react';
 import api from '@/utils/api';
 
 export default function AdminDashboard() {
