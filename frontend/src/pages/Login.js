@@ -43,10 +43,23 @@ export default function Login() {
     setLoading(true);
     try {
       const { data } = await api.post('/auth/register', registerData);
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      toast.success('Registration successful!');
-      navigate('/dashboard');
+      
+      if (data.pending_approval) {
+        toast.success(data.message);
+        setRegisterData({
+          email: '',
+          password: '',
+          name: '',
+          role: 'resident',
+          flat_number: '',
+          phone: ''
+        });
+      } else {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        toast.success('Registration successful!');
+        navigate('/dashboard');
+      }
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Registration failed');
     } finally {
