@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: apartment-mongodb-dev
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: apartment_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data_dev:/data/db
+    networks:
+      - apartment-network-dev
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: apartment-backend-dev
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017
+      - DB_NAME=apartment_db
+      - CORS_ORIGINS=*
+      - STRIPE_API_KEY=sk_test_emergent
+      - RAZORPAY_KEY_ID=rzp_test_emergent
+      - RAZORPAY_KEY_SECRET=test_secret_emergent
+      - JWT_SECRET=dev-secret-key
+    depends_on:
+      - mongodb
+    networks:
+      - apartment-network-dev
+    volumes:
+      - ./backend:/app
+      - /app/__pycache__
+    command: uvicorn server:app --host 0.0.0.0 --port 8001 --reload
+
+  frontend:
+    image: node:18-alpine
+    container_name: apartment-frontend-dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_BACKEND_URL=http://localhost:8001
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    depends_on:
+      - backend
+    networks:
+      - apartment-network-dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    working_dir: /app
+    command: sh -c "yarn install && yarn start"
+
+networks:
+  apartment-network-dev:
+    driver: bridge
+
+volumes:
+  mongodb_data_dev:
+    driver: local
