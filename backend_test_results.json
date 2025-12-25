@@ -1,0 +1,83 @@
+{
+  "timestamp": "2025-12-25T07:14:28.237266",
+  "total_tests": 15,
+  "passed_tests": 15,
+  "success_rate": 100.0,
+  "test_details": [
+    {
+      "test": "Admin Registration",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Resident Registration",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Get Current User",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Create Flat",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Get Flats",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Update Flat",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Set Monthly Charges",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Get Monthly Charges",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Record Payment",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Get Payments",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Admin Dashboard Stats",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Resident Dashboard",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Stripe Checkout Creation",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Role Access Control - Resident to Admin Endpoint",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Delete Flat",
+      "success": true,
+      "details": ""
+    }
+  ]
+}
