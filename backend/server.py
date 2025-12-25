@@ -163,7 +163,6 @@ async def register(user_data: UserRegister):
     
     user_dict = user_data.model_dump()
     hashed_pw = hash_password(user_dict.pop('password'))
-    user_dict['password_hash'] = hashed_pw
     
     # Check if this is the first admin
     is_first_admin = False
@@ -172,11 +171,14 @@ async def register(user_data: UserRegister):
         admin_count = await db.users.count_documents({"role": "admin"})
         if admin_count == 0:
             is_first_admin = True
+            approved = True
         else:
             approved = False
     
     user_dict['is_super_admin'] = is_first_admin
     user_dict['approved'] = approved
+    user_dict['password_hash'] = hashed_pw
+    
     user_obj = User(**{k: v for k, v in user_dict.items() if k in User.model_fields})
     
     doc = user_obj.model_dump()
