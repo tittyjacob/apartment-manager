@@ -9,10 +9,15 @@ ARG REACT_APP_BACKEND_URL=http://localhost:8001
 ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
 
 # Copy package files
-COPY package.json yarn.lock ./
+COPY package.json ./
+COPY yarn.lock* ./
 
 # Install dependencies
-RUN yarn install --frozen-lockfile
+RUN if [ -f yarn.lock ]; then \
+      yarn install --frozen-lockfile; \
+    else \
+      yarn install; \
+    fi
 
 # Copy application code
 COPY . .
