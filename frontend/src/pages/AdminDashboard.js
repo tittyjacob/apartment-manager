@@ -9,12 +9,25 @@ import api from '@/utils/api';
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [stats, setStats] = useState(null);
+  const [pendingAdminsCount, setPendingAdminsCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   useEffect(() => {
     fetchStats();
+    if (user.is_super_admin) {
+      fetchPendingAdmins();
+    }
   }, []);
+
+  const fetchPendingAdmins = async () => {
+    try {
+      const { data } = await api.get('/admin/pending');
+      setPendingAdminsCount(data.length);
+    } catch (error) {
+      console.error('Failed to fetch pending admins');
+    }
+  };
 
   const fetchStats = async () => {
     try {
