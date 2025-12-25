@@ -5,32 +5,27 @@ WORKDIR /app
 # Set build argument
 ARG REACT_APP_BACKEND_URL=http://localhost:8001
 ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
-ENV NODE_ENV=production
 
-# Copy all package manager files
-COPY package*.json ./
-COPY yarn.loc* ./
+# Copy package manager lock files (if they exist)
+COPY package.json yarn.lock* package-lock.json* ./
 
-# Install dependencies with yarn (handles resolutions for ajv fix)
-RUN corepack enable && \
-    corepack prepare yarn@stable --activate && \
-    yarn install || npm install --force --legacy-peer-deps
+# Enable yarn via corepack
+RUN corepack enable && corepack prepare yarn@stable --activate
 
-# Copy rest of the code
+# Install dependencies (yarn will use yarn.lock if it exists)
+RUN yarn install --frozen-lockfile || yarn install || npm install --force
+
+# Copy source code
 COPY . .
 
-# Build the app
-RUN yarn build || npm run build
+# Build
+RUN yarn build
 
-# Production stage with Nginx
+# Production stage
 FROM nginx:alpine
 
-# Copy nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Copy build files
 COPY --from=build /app/build /usr/share/nginx/html
 
 EXPOSE 80
-
 CMD ["nginx", "-g", "daemon off;"]
