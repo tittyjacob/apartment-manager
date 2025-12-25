@@ -2,44 +2,37 @@ FROM node:18-alpine as build
 
 WORKDIR /app
 
-# Accept build arguments
+# Set build argument
 ARG REACT_APP_BACKEND_URL=http://localhost:8001
-
-# Set environment variable
 ENV REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
 
-# Copy package files
+# Copy package.json first
 COPY package.json ./
-COPY yarn.lock* ./
 
-# Install dependencies
-RUN if [ -f yarn.lock ]; then \
-      yarn install --frozen-lockfile; \
-    else \
-      yarn install; \
-    fi
+# Install dependencies using npm (more reliable than yarn in Docker)
+RUN npm install --legacy-peer-deps
 
-# Copy application code
+# Copy rest of the code
 COPY . .
 
-# Build the application
-RUN yarn build
+# Build the app
+RUN npm run build
 
-# Production stage
+# Production stage with Nginx
 FROM nginx:alpine
 
-# Copy custom nginx config
+# Copy nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copy built assets from build stage
+# Copy build files
 COPY --from=build /app/build /usr/share/nginx/html
 
-# Add script to inject runtime env variables
-RUN apk add --no-cache bash
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
+# Create entrypoint script inline
+RUN echo '#!/bin/sh' > /docker-entrypoint.sh && \
+    echo 'echo "Starting Nginx..."' >> /docker-entrypoint.sh && \
+    echo 'exec "$@"' >> /docker-entrypoint.sh && \
+    chmod +x /docker-entrypoint.sh
 
-# Expose port
 EXPOSE 80
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
