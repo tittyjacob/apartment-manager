@@ -185,6 +185,21 @@ export default function AdminDashboard() {
                 <CreditCard className="h-4 w-4 mr-2" />
                 Record Payment
               </Button>
+              {user.is_super_admin && (
+                <Button 
+                  className="w-full justify-start relative" 
+                  onClick={() => navigate('/admin-approvals')} 
+                  data-testid="admin-approvals-btn"
+                >
+                  <Shield className="h-4 w-4 mr-2" />
+                  Admin Approvals
+                  {pendingAdminsCount > 0 && (
+                    <span className="ml-auto bg-accent text-white text-xs px-2 py-0.5 rounded-full" data-testid="badge-count">
+                      {pendingAdminsCount}
+                    </span>
+                  )}
+                </Button>
+              )}
             </CardContent>
           </Card>
         </div>
