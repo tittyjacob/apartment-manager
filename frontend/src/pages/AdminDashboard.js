@@ -76,6 +76,22 @@ export default function AdminDashboard() {
         <div className="mb-8">
           <h2 className="text-3xl font-bold mb-2 tracking-tight" data-testid="overview-title">Overview</h2>
           <p className="text-muted-foreground" data-testid="overview-subtitle">Monitor your apartment association financials</p>
+          {user.is_super_admin && pendingAdminsCount > 0 && (
+            <div className="mt-4 p-4 bg-accent/10 border border-accent rounded-lg flex items-center justify-between" data-testid="pending-approvals-banner">
+              <div className="flex items-center gap-3">
+                <Shield className="h-5 w-5 text-accent" />
+                <div>
+                  <p className="font-medium" data-testid="pending-count">
+                    {pendingAdminsCount} admin approval{pendingAdminsCount !== 1 ? 's' : ''} pending
+                  </p>
+                  <p className="text-sm text-muted-foreground">Review and approve new admin registrations</p>
+                </div>
+              </div>
+              <Button onClick={() => navigate('/admin-approvals')} data-testid="view-approvals-btn">
+                Review Now
+              </Button>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
