@@ -76,6 +76,8 @@ class User(BaseModel):
     role: str
     flat_number: Optional[str] = None
     phone: Optional[str] = None
+    is_super_admin: bool = False
+    approved: bool = True
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
 
 class Flat(BaseModel):
