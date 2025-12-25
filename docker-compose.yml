@@ -59,6 +59,8 @@ services:
     restart: unless-stopped
     ports:
       - "3000:80"
+    environment:
+      - REACT_APP_BACKEND_URL=http://localhost:8001
     depends_on:
       - backend
     networks:
