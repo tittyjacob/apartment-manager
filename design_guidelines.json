@@ -1,0 +1,181 @@
+{
+  "identity": {
+    "name": "E1",
+    "mission": "Create a top 1% apartment association app that blends civic trust with organic warmth.",
+    "principles": [
+      "Fusion over Imitation: Mix civic utility with botanical warmth.",
+      "Emotion First: Calm, organized, and transparent.",
+      "Content is King: Data visualization is the hero.",
+      "Zoom In: Focus on key metrics (dues, occupancy).",
+      "Negative Space: Use generous padding to reduce financial anxiety.",
+      "Contrast: High contrast for accessibility and hierarchy."
+    ]
+  },
+  "typography": {
+    "headings": {
+      "family": "Manrope, sans-serif",
+      "weights": ["600", "700", "800"],
+      "usage": "Headings, KPIs, Navigation",
+      "letterSpacing": "tracking-tight"
+    },
+    "body": {
+      "family": "Public Sans, sans-serif",
+      "weights": ["400", "500"],
+      "usage": "Body text, Tables, Forms",
+      "letterSpacing": "tracking-normal"
+    },
+    "mono": {
+      "family": "JetBrains Mono, monospace",
+      "usage": "Transaction IDs, Receipt Numbers, Code Snippets"
+    },
+    "installation": "Import via Google Fonts in index.css: @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap');"
+  },
+  "colors": {
+    "archetype": "Organic & Earthy",
+    "palette": {
+      "primary": {
+        "DEFAULT": "#1A4D2E",
+        "foreground": "#FFFFFF",
+        "description": "Deep Forest Green - Trust, Growth, Stability"
+      },
+      "secondary": {
+        "DEFAULT": "#F5F5F0",
+        "foreground": "#1A4D2E",
+        "description": "Warm Sand - Backgrounds, Softness"
+      },
+      "accent": {
+        "DEFAULT": "#E07A5F",
+        "foreground": "#FFFFFF",
+        "description": "Terracotta - Alerts, Actions, Dues"
+      },
+      "muted": {
+        "DEFAULT": "#F2F4F3",
+        "foreground": "#3D405B",
+        "description": "Mist Grey - Secondary Backgrounds"
+      },
+      "card": {
+        "DEFAULT": "#FFFFFF",
+        "foreground": "#3D405B"
+      },
+      "popover": {
+        "DEFAULT": "#FFFFFF",
+        "foreground": "#3D405B"
+      },
+      "border": "#E5E7EB",
+      "input": "#E5E7EB",
+      "ring": "#1A4D2E",
+      "chart": {
+        "1": "#1A4D2E",
+        "2": "#E07A5F",
+        "3": "#81B29A",
+        "4": "#F2CC8F",
+        "5": "#3D405B"
+      }
+    },
+    "gradients": {
+      "hero": "linear-gradient(135deg, #1A4D2E 0%, #2C6E49 100%)",
+      "subtle": "linear-gradient(to bottom, #F5F5F0, #FFFFFF)"
+    }
+  },
+  "layout": {
+    "spacing_system": {
+      "base": "4px",
+      "scale": ["p-1", "p-2", "p-4", "p-6", "p-8", "p-12", "p-16", "p-24", "p-32"],
+      "rule": "Use 2-3x more spacing than typical. Containers with borders must have p-6 or p-8."
+    },
+    "grids": {
+      "admin_dashboard": {
+        "type": "Control Room",
+        "classes": "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6",
+        "strategy": "Dense, data-heavy. Summary cards (col-span-1), Main Chart (col-span-2 row-span-2), Feed (col-span-1 row-span-2)."
+      },
+      "resident_dashboard": {
+        "type": "Tetris",
+        "classes": "grid grid-cols-1 md:grid-cols-8 lg:grid-cols-12 gap-8",
+        "strategy": "Asymmetric. Hero (col-span-full md:col-span-8), Quick Actions (col-span-4), History (col-span-full)."
+      }
+    },
+    "containers": {
+      "main": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+      "narrow": "max-w-3xl mx-auto px-4"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 py-2 rounded-md font-medium transition-transform active:scale-95",
+      "secondary": "bg-secondary text-secondary-foreground hover:bg-secondary/80 h-10 px-6 py-2 rounded-md font-medium",
+      "outline": "border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-6 py-2 rounded-md"
+    },
+    "cards": {
+      "style": "bg-card text-card-foreground rounded-xl border border-border/50 shadow-sm hover:shadow-md transition-shadow duration-200",
+      "padding": "p-6"
+    },
+    "inputs": {
+      "style": "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+    },
+    "surfaces": {
+      "glass": "bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-sm",
+      "sidebar": "bg-muted/30 border-r border-border h-full"
+    }
+  },
+  "visual_enhancers": {
+    "textures": "Use subtle noise texture on solid backgrounds to reduce digital flatness.",
+    "shadows": {
+      "soft": "0 4px 20px -2px rgba(0, 0, 0, 0.05)",
+      "sharp": "4px 4px 0px 0px rgba(26, 77, 46, 0.1)"
+    },
+    "borders": "1px solid rgba(0,0,0,0.08)"
+  },
+  "motion": {
+    "library": "framer-motion",
+    "transitions": {
+      "default": { "duration": 0.2, "ease": "easeInOut" },
+      "spring": { "type": "spring", "stiffness": 300, "damping": 30 }
+    },
+    "page_transition": {
+      "initial": { "opacity": 0, "y": 20 },
+      "animate": { "opacity": 1, "y": 0 },
+      "exit": { "opacity": 0, "y": -20 }
+    }
+  },
+  "images": {
+    "source": "Unsplash/Pexels via image_selector_tool",
+    "mapping": [
+      {
+        "category": "hero_background",
+        "url": "https://images.unsplash.com/photo-1617341623760-1919df79274c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBhcGFydG1lbnQlMjBidWlsZGluZyUyMGV4dGVyaW9yJTIwc3Vubnl8ZW58MHx8fHwxNzY2NjQ2MjgyfDA&ixlib=rb-4.1.0&q=85",
+        "description": "Apartment building during golden hour - Use for Login Page Background or Resident Dashboard Hero"
+      },
+      {
+        "category": "section_header",
+        "url": "https://images.unsplash.com/photo-1675118546055-32c56579cc58?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBhcGFydG1lbnQlMjBidWlsZGluZyUyMGV4dGVyaW9yJTIwc3Vubnl8ZW58MHx8fHwxNzY2NjQ2MjgyfDA&ixlib=rb-4.1.0&q=85",
+        "description": "White Concrete Apartment Building - Use for Flats Management Header"
+      },
+      {
+        "category": "user_avatar",
+        "url": "https://images.unsplash.com/photo-1740153204804-200310378f2f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzd8MHwxfHNlYXJjaHwyfHxwcm9wZXJ0eSUyMG1hbmFnZXIlMjBwcm9mZXNzaW9uYWwlMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjY2NDYyODN8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Professional Woman in Suit - Use for Admin Profile / Welcome Message"
+      }
+    ]
+  },
+  "accessibility": {
+    "contrast": "Ensure 4.5:1 for normal text, 3:1 for large text.",
+    "interactive": "Focus states must be visible (ring-2 ring-offset-2).",
+    "testing": "All interactive elements must have data-testid attribute."
+  },
+  "instructions_to_main_agent": {
+    "setup": "Update tailwind.config.js with the color palette. Import fonts in index.css.",
+    "components": "Use Shadcn for complex logic (Dialog, Form, Table). Customize styles to match the 'Organic & Earthy' theme.",
+    "layout": "Implement the 'Control Room' grid for Admin Dashboard and 'Tetris' grid for Resident Dashboard.",
+    "charts": "Use Recharts (via Shadcn Charts) with the defined chart colors.",
+    "icons": "Use lucide-react for icons. Keep them simple and consistent.",
+    "file_structure": "Maintain the existing structure. Create new components in src/components/ui or src/components/custom."
+  },
+  "universal_guidelines": {
+    "avoid_slop": "Do not use generic gradients or centered layouts. Use asymmetry and texture.",
+    "micro_interactions": "Add hover states and transitions to all interactive elements.",
+    "spacing": "Use generous spacing (p-8, p-12) to create breathing room.",
+    "toasts": "Use sonner for notifications.",
+    "exports": "Named exports for components, default exports for pages."
+  }
+}
